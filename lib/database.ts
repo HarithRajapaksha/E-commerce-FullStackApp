@@ -1,11 +1,5 @@
 import mongoose from "mongoose";
 
-const MONGODB_URL = process.env.MONGODB_URL;
-
-if (!MONGODB_URL) {
-  throw new Error("MONGODB_URL is not defined in the environment variables");
-}
-
 let cached = (global as any).mongoose;
 
 if (!cached) {
@@ -13,6 +7,12 @@ if (!cached) {
 }
 
 export async function connectDB() {
+  const MONGODB_URL = process.env.MONGODB_URL;
+
+  if (!MONGODB_URL) {
+    throw new Error("MONGODB_URL is not defined in the environment variables");
+  }
+
   if (cached.conn) {
     return cached.conn;
   }
@@ -22,7 +22,7 @@ export async function connectDB() {
       bufferCommands: false,
     };
 
-    cached.promise = mongoose.connect(MONGODB_URL!, opts).then((mongooseInstance) => {
+    cached.promise = mongoose.connect(MONGODB_URL, opts).then((mongooseInstance) => {
       return mongooseInstance;
     });
   }
